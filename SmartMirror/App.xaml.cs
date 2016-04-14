@@ -28,6 +28,7 @@ namespace SmartMirror
         /// </summary>
         public App()
         {
+            //Krittika added comment
             Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
                 Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
                 Microsoft.ApplicationInsights.WindowsCollectors.Session);
