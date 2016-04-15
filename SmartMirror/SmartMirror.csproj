@@ -98,6 +98,10 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Messanger_Notification\Notification_View.xaml.cs">
+      <DependentUpon>Notification_View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Messanger_Notification\Notification_ViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUCs\SpeechRecognitionTest.xaml.cs">
       <DependentUpon>SpeechRecognitionTest.xaml</DependentUpon>
@@ -107,7 +111,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="SmartMirror_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />
@@ -127,6 +130,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Messanger_Notification\Notification_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TestUCs\SpeechRecognitionTest.xaml">
       <SubType>Designer</SubType>
