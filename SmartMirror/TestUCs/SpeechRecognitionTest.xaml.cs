@@ -99,7 +99,7 @@ namespace SmartMirror.TestUCs
 
         private string removetokens(string recognizedText)
         {
-            return recognizedText.Replace("Funnction", "").Replace("Funktion", "").Replace(".","").Trim();
+            return recognizedText.Replace("Function", "").Replace("Funktion", "").Replace(".","").Trim();
         }
 
 
