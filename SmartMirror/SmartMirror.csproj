@@ -89,6 +89,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Messenger_Notification\Google\client_secret.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -98,10 +101,16 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Messanger_Notification\Notification_View.xaml.cs">
+    <Compile Include="MainPage_ViewModel.cs" />
+    <Compile Include="Messenger_Notification\Google\Gmail_View.xaml.cs">
+      <DependentUpon>Gmail_View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Messenger_Notification\Google\Gmail_ViewModel.cs" />
+    <Compile Include="Messenger_Notification\Notification_View.xaml.cs">
       <DependentUpon>Notification_View.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Messanger_Notification\Notification_ViewModel.cs" />
+    <Compile Include="Messenger_Notification\Notification_ViewModel.cs" />
+    <Compile Include="ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +119,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Messenger_Notification\Google\gmail-icon.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -128,7 +138,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Messanger_Notification\Notification_View.xaml">
+    <Page Include="Messenger_Notification\Google\Gmail_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Messenger_Notification\Notification_View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,9 +5,24 @@
     xmlns:local="using:SmartMirror"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModel="using:SmartMirror"
+    xmlns:GmailView="using:SmartMirror.Messenger_Notification.Google"
+    xmlns:GmailViewModel="using:SmartMirror.Messenger_Notification.Google"
     mc:Ignorable="d">
+    
+    <UserControl.DataContext>
+        <ViewModel:MainPage_ViewModel></ViewModel:MainPage_ViewModel>
+    </UserControl.DataContext>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <DataTemplate x:Key="gmail_Template" x:DataType="GmailViewModel:Gmail_ViewModel">
+            <GmailView:Gmail_View/>
+        </DataTemplate>
+    </Page.Resources>
+        
+    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
+        <ContentControl Content="{Binding Gmail_Module}" ContentTemplate="{StaticResource gmail_Template}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="100"/>
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
-    </Grid>
+    </StackPanel>
 </Page>

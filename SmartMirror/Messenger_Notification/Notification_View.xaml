@@ -9,7 +9,7 @@
     d:DesignHeight="100"
     d:DesignWidth="500">
 
-    <ListView>
+    <ListView Background="White">
 
     </ListView>
 </UserControl>
