@@ -20,6 +20,13 @@ namespace SmartMirror
             Gmail_Module = new Gmail_ViewModel();
             speechPart = new SpeechComponent();
             speechPart.commandsGenerated += reactOnSpeech;
+            speechPart.sessionsExpired += speechSessionExpired;
+            speechPart.startSession();
+        }
+
+        private void speechSessionExpired()
+        {
+            //tbd
             speechPart.startSession();
         }
 
