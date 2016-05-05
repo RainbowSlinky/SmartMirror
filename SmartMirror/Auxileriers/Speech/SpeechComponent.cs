@@ -211,8 +211,8 @@ namespace SmartMirror.Auxileriers.Speech
                         {
                             switch (item.Groups[pointer].Value)
                             {
-                                case "oder": transmittedText = "or";break;
-                                case "und":transmittedText = "and";break;
+                                case "oder": transmittedText = "or ";break;
+                                case "und":transmittedText = "and ";break;
                                 default: transmittedText = ""; break;
                             }
                             filter = transmittedText;
