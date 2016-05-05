@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -27,9 +28,11 @@ namespace SmartMirror
             this.InitializeComponent();
         }
 
+
         private void button_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(TestUCs.SpeechRecoginitionTest), null);
         }
     }
+
 }
