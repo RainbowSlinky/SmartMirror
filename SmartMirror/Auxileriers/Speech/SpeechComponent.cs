@@ -255,6 +255,7 @@ namespace SmartMirror.Auxileriers.Speech
         {
             Dictionary<String, List<String>> retval = new Dictionary<String, List<String>>();
             extractMailCommandsEN(input, retval);
+            extractCalenderCommandsEN(input, retval);
             return retval;
         }
 
