@@ -180,6 +180,7 @@ namespace SmartMirror.Auxileriers.Speech
         {
             Dictionary<String, List<String>> retval = new Dictionary<String, List<String>>();
             extractMailCommandsDE(input, retval);
+            extractCalenderCommandsDE(input, retval);
             return retval;
         }
 
@@ -233,6 +234,19 @@ namespace SmartMirror.Auxileriers.Speech
             }
         }
 
+
+        private void extractCalenderCommandsDE(string input, Dictionary<string, List<string>> retval)
+        {
+            //make it easier to filter
+            input = input.ToLower();
+            Regex rxOpenCalender = new Regex("(zeig|zeige|gib|öffne )mir? meinen? kalender)");
+            Regex rxCloseCalender = new Regex("(schließ|mach (meinen )?kalender( wieder)?( zu)?)|"+
+                "kalender( wieder)? schließen");
+            if (rxCloseCalender.IsMatch(input))
+            { retval.Add("closeCalender", null); }
+            else if (rxOpenCalender.IsMatch(input))
+            { retval.Add("openCalender", null); }
+        }
         #endregion
 
         #region "EN"
@@ -280,8 +294,19 @@ namespace SmartMirror.Auxileriers.Speech
                 }
             }
         }
+        private void extractCalenderCommandsEN(string input, Dictionary<string, List<string>> retval)
+        {
+            //make it easier to filter
+            input = input.ToLower();
+            Regex rxOpenCalender = new Regex("give|show|display (me )?(my )?calender)");
+            Regex rxCloseCalender = new Regex("close (my )?calender( again)?");
+            if (rxCloseCalender.IsMatch(input))
+            { retval.Add("closeCalender", null); }
+            else if (rxOpenCalender.IsMatch(input))
+            { retval.Add("openCalender", null); }
+        }
         #endregion
-    
+
 
 
         #endregion

@@ -39,6 +39,8 @@ namespace SmartMirror
                 {
                     case "showMailList": break; //TBD
                     case "showMails": break; //TBD
+                    case "closeCalender":break; //TBD
+                    case "openCalender":break; //TBD
                     default: break;
 
                 }
