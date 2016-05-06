@@ -24,7 +24,7 @@ namespace SmartMirror.Auxileriers.Speech
         SpeechRecognizer speechRecognizer;                               // The speech recognition object 
                                                                          //IAsyncOperation<SpeechRecognitionResult> _recoOperation;    // Used to canel the current asynchronous speech recognition operation 
 
-        public delegate void CommandsGeneratedHandler(Dictionary<SupportedCommands, List<String>> commands);
+        public delegate void CommandsGeneratedHandler(string command,string parameter);
 
         public delegate void SessionFinishedHandler();
 
@@ -60,8 +60,13 @@ namespace SmartMirror.Auxileriers.Speech
                 // visual feedback to help the user understand whether they're being heard.
                 speechRecognizer.StateChanged += SpeechRecognizer_StateChanged;
 
-                SpeechRecognitionTopicConstraint dictation = new SpeechRecognitionTopicConstraint(SpeechRecognitionScenario.Dictation, "command to execute");
-                speechRecognizer.Constraints.Add(dictation);
+               
+                 string languageTag = recognizedLanguage.LanguageTag;
+                languageTag = languageTag.Remove(languageTag.IndexOf("-"));
+                string fileName = String.Format("Assets\\Grammar\\{0}\\Grammar.xml", languageTag);
+                StorageFile grammarContentFile = await Package.Current.InstalledLocation.GetFileAsync(fileName);
+                SpeechRecognitionGrammarFileConstraint grammarContstraint = new SpeechRecognitionGrammarFileConstraint(grammarContentFile);
+                speechRecognizer.Constraints.Add(grammarContstraint);
                 SpeechRecognitionCompilationResult compilationResult = await speechRecognizer.CompileConstraintsAsync();
 
                 // Check to make sure that the constraints were in a proper format and the recognizer was able to compile them.
@@ -73,9 +78,9 @@ namespace SmartMirror.Auxileriers.Speech
                 {
 
                     // Set EndSilenceTimeout to give users more time to complete speaking a phrase.
-                    speechRecognizer.Timeouts.EndSilenceTimeout = TimeSpan.FromHours(24);
-                    speechRecognizer.Timeouts.InitialSilenceTimeout = TimeSpan.FromHours(24);
-                    speechRecognizer.Timeouts.BabbleTimeout = TimeSpan.FromHours(24);
+                    speechRecognizer.Timeouts.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
+                    //speechRecognizer.Timeouts.InitialSilenceTimeout = TimeSpan.FromHours(1.2);
+                    //speechRecognizer.Timeouts.BabbleTimeout = TimeSpan.FromHours(24);
                     // Handle continuous recognition events. Completed fires when various error states occur. ResultGenerated fires when
                     // some recognized phrases occur, or the garbage rule is hit.
                     speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
@@ -112,8 +117,18 @@ namespace SmartMirror.Auxileriers.Speech
 
         private void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
         {
+            if (args.Result.SemanticInterpretation != null)
+            {
+                string command="", param = "";
+                if (args.Result.SemanticInterpretation.Properties.ContainsKey("command"))
+                { command = args.Result.SemanticInterpretation.Properties["command"][0].ToString(); }
+                if (args.Result.SemanticInterpretation.Properties.ContainsKey("param"))
+                { param = args.Result.SemanticInterpretation.Properties["param"][0].ToString(); }
 
-            commandsGenerated(extractCommands(args.Result.Text));
+                commandsGenerated(command, param);
+                System.Diagnostics.Debug.WriteLine("Something matched");
+            }
+            //commandsGenerated(extractCommands(args.Result.Text));
         }
         //endTBD
         private void ContinuousRecognitionSession_Completed(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)

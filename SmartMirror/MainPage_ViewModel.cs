@@ -39,26 +39,28 @@ namespace SmartMirror
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Green); });
         }
 
-        private async void  reactOnSpeech(Dictionary<SupportedCommands, List<String>> commands)
+        private async void  reactOnSpeech(string command,string param)
         {
 
-            foreach (var command in commands)
-            {
-                switch (command.Key)
+             switch (command)
                 {
-                    case SupportedCommands.showMailList: break; //TBD
-                    case SupportedCommands.showMails: break; //TBD
-                    case SupportedCommands.closeCalender:break; //TBD
-                    case SupportedCommands.openCalender:break; //TBD
+                    case "showMailList": break; //TBD
+                    case "showMails": break; //TBD
+                    case "closeCalender":break; //TBD
+                    case "openCalender":break; //TBD
+                case "openNews":
+                case "closeNews":
+                case "openSpecificNews":
+                case "closeSpecificNews":
                     default: break;
 
                 }
               await  dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
-                    var messageDialog = new Windows.UI.Popups.MessageDialog(Enum.GetName(typeof(SupportedCommands),command.Key), "Command detected");
+                    var messageDialog = new Windows.UI.Popups.MessageDialog(command+" parameter was: " +param, "Command detected");
                     await messageDialog.ShowAsync();
                 });
                
-            }
+            
 
         }
     }
