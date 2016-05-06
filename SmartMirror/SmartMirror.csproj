@@ -92,16 +92,25 @@
     <Content Include="Messenger_Notification\Google\client_secret.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\client_secret.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainPage_ViewModel.cs" />
+    <Compile Include="Messenger_Notification\Google\Content_View.xaml.cs">
+      <DependentUpon>Content_View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Messenger_Notification\Google\Content_ViewModel.cs" />
+    <Compile Include="Messenger_Notification\Google\GmailMessage.cs" />
     <Compile Include="Messenger_Notification\Google\Gmail_View.xaml.cs">
       <DependentUpon>Gmail_View.xaml</DependentUpon>
     </Compile>
@@ -110,7 +119,7 @@
       <DependentUpon>Notification_View.xaml</DependentUpon>
     </Compile>
     <Compile Include="Messenger_Notification\Notification_ViewModel.cs" />
-    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="Common\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUCs\SpeechRecognitionTest.xaml.cs">
       <DependentUpon>SpeechRecognitionTest.xaml</DependentUpon>
@@ -142,6 +151,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Messenger_Notification\Google\Content_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Messenger_Notification\Google\Gmail_View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,9 +171,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

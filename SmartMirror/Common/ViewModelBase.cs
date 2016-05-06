@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SmartMirror
+namespace SmartMirror.Common
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

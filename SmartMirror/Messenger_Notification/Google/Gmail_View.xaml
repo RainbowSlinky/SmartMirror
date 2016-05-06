@@ -7,14 +7,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModel="using:SmartMirror.Messenger_Notification.Google"
     mc:Ignorable="d"
-    d:DesignHeight="100"
-    d:DesignWidth="100">
-    <UserControl.DataContext>
+    d:DesignHeight="150"
+    d:DesignWidth="150">
+
+    <!--<UserControl.DataContext>
         <ViewModel:Gmail_ViewModel></ViewModel:Gmail_ViewModel>
-    </UserControl.DataContext>
-    
-    <StackPanel RequestedTheme="Dark" Background="#FF997171">
-        <Image x:Name="gmail_Image" Height="80" Width="80" Margin="0,5,0,0" Source="{Binding Gmail_Icon}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <TextBlock x:Name="messages_TextBlock" Text="{Binding Message_Count}" MaxLines="1" TextAlignment="Center" FontWeight="Bold" TextLineBounds="Tight" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="80" Height="15"/>
+    </UserControl.DataContext>-->
+
+    <StackPanel RequestedTheme="Dark" Margin="0,0,-52,-71" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Image x:Name="gmailIcon_Image" Height="100" Width="100" Source="{Binding GmailIcon}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <TextBlock x:Name="messagesCount_TextBlock" Text="{Binding MessageCount}" MaxLines="1" FontWeight="Bold" TextLineBounds="Tight" Width="150" Height="20" TextAlignment="Center"/>
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="signIn_Button" Command="{Binding SignIn}" Width="50" Height="30" Content="Sign In" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Button x:Name="listMessages_Button" Command="{Binding ListMessages}" Width="50" Height="30" Content="List" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Button x:Name="openEmail_Button" Command="{Binding OpenEmailMessage}" Width="50" Height="30" Content="Open" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
     </StackPanel>
 </UserControl>
