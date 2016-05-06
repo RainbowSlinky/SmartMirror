@@ -89,6 +89,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\Grammar\de\Grammar.xml" />
+    <Content Include="Assets\Grammar\en\Grammar.xml" />
+    <Content Include="Assets\Grammar\en\SampleGrammar.xml" />
     <Content Include="Messenger_Notification\Google\client_secret.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -101,7 +104,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Auxileriers\Speech\SupportedCommandsEnum.cs" />
+    <Compile Include="Auxileriers\Speech\IllegaleStateException.cs" />
+    <Compile Include="Auxileriers\Speech\SpeechComponent.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -132,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Messenger_Notification\Google\gmail-icon.png" />
-    <Content Include="Assets\Grammar\de-De\Grammar.xml" />
+    <Content Include="Assets\Grammar\de\SampleGrammar.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -147,6 +152,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Datetime\Calendar\Calendar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Datetime\Time\Time.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -58,7 +58,7 @@ namespace SmartMirror.TestUCs
             await initRecognizer((Language)((ComboBoxItem)cbLanguageSelection.SelectedItem).Tag);
         }
 
-       private void populateLanguageDropdown()
+        private void populateLanguageDropdown()
         {
             cbLanguageSelection.SelectionChanged -= cbLanguageSelection_SelectionChanged;
             Language defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
@@ -84,22 +84,22 @@ namespace SmartMirror.TestUCs
             await initRecognizer((Language)((ComboBoxItem)cbLanguageSelection.SelectedItem).Tag);
         }
 
-               /// <summary>
-            /// Initialize Speech Recognizer and compile constraints.
-            /// </summary>
-            /// <param name="recognizerLanguage">Language to use for the speech recognizer</param>
-            /// <returns>Awaitable task.</returns>
+        /// <summary>
+        /// Initialize Speech Recognizer and compile constraints.
+        /// </summary>
+        /// <param name="recognizerLanguage">Language to use for the speech recognizer</param>
+        /// <returns>Awaitable task.</returns>
         private async Task initRecognizer(Language recognizedLanguage)
         {
-           
-            
+
+
             if (speechRecognizer != null)
             {
                 // cleanup prior to re-initializing this scenario.
                 speechRecognizer.ContinuousRecognitionSession.Completed -= ContinuousRecognitionSession_Completed;
                 speechRecognizer.ContinuousRecognitionSession.ResultGenerated -= ContinuousRecognitionSession_ResultGenerated;
+                //speechRecognizer.ContinuousRecognitionSession.AutoStopSilenceTimeout = new TimeSpan(24, 0, 0);
                 speechRecognizer.StateChanged -= SpeechRecognizer_StateChanged;
-
                 this.speechRecognizer.Dispose();
                 this.speechRecognizer = null;
             }
@@ -113,7 +113,7 @@ namespace SmartMirror.TestUCs
 
                 // determine the language code being used.
                 string languageTag = recognizedLanguage.LanguageTag;
-                string fileName = String.Format("Assets\\Grammar\\{0}\\Grammar.xml", languageTag);
+                string fileName = String.Format("Assets\\Grammar\\{0}\\SampleGrammar.xml", languageTag);
                 StorageFile grammarContentFile = await Package.Current.InstalledLocation.GetFileAsync(fileName);
 
                 // Initialize the SpeechRecognizer and add the grammar.
@@ -124,7 +124,9 @@ namespace SmartMirror.TestUCs
                 speechRecognizer.StateChanged += SpeechRecognizer_StateChanged;
 
                 SpeechRecognitionGrammarFileConstraint grammarConstraint = new SpeechRecognitionGrammarFileConstraint(grammarContentFile);
-                speechRecognizer.Constraints.Add(grammarConstraint);
+                SpeechRecognitionTopicConstraint tp = new SpeechRecognitionTopicConstraint(SpeechRecognitionScenario.Dictation, "command to execute");
+
+                speechRecognizer.Constraints.Add(tp);
                 SpeechRecognitionCompilationResult compilationResult = await speechRecognizer.CompileConstraintsAsync();
 
                 // Check to make sure that the constraints were in a proper format and the recognizer was able to compile them.
@@ -134,14 +136,15 @@ namespace SmartMirror.TestUCs
                     //btnContinuousRecognize.IsEnabled = false;
                     //// Let the user know that the grammar didn't compile properly.
                     //resultTextBlock.Text = "Unable to compile grammar.";
-                    System.Diagnostics.Debug.WriteLine("Unable to compile grammar, "+compilationResult.Status.ToString());
+                    System.Diagnostics.Debug.WriteLine("Unable to compile grammar, " + compilationResult.Status.ToString());
                 }
                 else
                 {
 
                     // Set EndSilenceTimeout to give users more time to complete speaking a phrase.
-                    speechRecognizer.Timeouts.EndSilenceTimeout = TimeSpan.FromSeconds(1.2);
-
+                    speechRecognizer.Timeouts.EndSilenceTimeout = TimeSpan.FromHours(24);
+                    speechRecognizer.Timeouts.InitialSilenceTimeout = TimeSpan.FromHours(24);
+                    speechRecognizer.Timeouts.BabbleTimeout = TimeSpan.FromHours(24);
                     // Handle continuous recognition events. Completed fires when various error states occur. ResultGenerated fires when
                     // some recognized phrases occur, or the garbage rule is hit.
                     speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
@@ -169,40 +172,47 @@ namespace SmartMirror.TestUCs
                     await messageDialog.ShowAsync();
                 }
             }
-    }
+        }
 
 
 
         //tbd
         private void SpeechRecognizer_StateChanged(SpeechRecognizer sender, SpeechRecognizerStateChangedEventArgs args)
         {
-           //Nothing ATM
+            //Nothing ATM
         }
 
-        private void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
+        private async void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
         {
-            if (args.Result.SemanticInterpretation.Properties.ContainsKey("FunctionToCall"))
+
+            if (args.Result.SemanticInterpretation != null)
             {
-                var str = args.Result.SemanticInterpretation.Properties["FunctionToCall"][0].ToString();
-                str = removetokens(str);
-                callTestfunction(str);
+                if (args.Result.SemanticInterpretation.Properties.ContainsKey("FunctionToCall"))
+                {
+                    var str = args.Result.SemanticInterpretation.Properties["FunctionToCall"][0].ToString();
+                    str = removetokens(str);
+                    callTestfunction(str);
+                }
             }
             else
-                resultTextBlock.Text = args.Result.Text;
-        
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    resultTextBlock.Text = args.Result.Text;
+                });
+
 
 
         }
- //endTBD
+        //endTBD
         private async void ContinuousRecognitionSession_Completed(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)
         {
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                resultTextBlock.Text = "Recording finished";
+                resultTextBlock.Text = "Recording finished, " + args.Status.ToString();
             });
-            
+           //await  speechRecognizer.RecognizeAsync();
         }
-       
+
 
         /// <summary>
         /// normal not continius dictation scenario
@@ -236,15 +246,15 @@ namespace SmartMirror.TestUCs
                     //seems a bit buggy, need to test a bit more
                     //SpeechRecognitionResult speechRecognitionResult = await _recognizer.RecognizeWithUIAsync();
                     var recognizedText = speechRecognitionResult.Text;
-                recognizedText = removetokens(recognizedText);
-                callTestfunction(recognizedText);
+                    recognizedText = removetokens(recognizedText);
+                    callTestfunction(recognizedText);
                 }
                 catch (Exception ex2)
                 {
                     var ee = ex2.Message;
                     throw;
                 }
-                
+
             }
             catch
             (Exception ex)
@@ -262,7 +272,7 @@ namespace SmartMirror.TestUCs
 
         private string removetokens(string recognizedText)
         {
-            return recognizedText.Replace("Function", "").Replace("Funktion", "").Replace(".","").Trim();
+            return recognizedText.Replace("Function", "").Replace("Funktion", "").Replace(".", "").Trim();
         }
 
 
@@ -270,18 +280,18 @@ namespace SmartMirror.TestUCs
         #region"Textual Output"
         private void callTestfunction(String letter)
         {
-           var upper=letter.ToUpper();
+            var upper = letter.ToUpper();
             switch (upper)
             {
-                case "A":  testFunctionA(); break;
-                case "B":  testFunctionB();break;
-                case "C": testFunctionC();break;
-                case "1": testFunction1();break;
-                default: testFunctionNotAvailable(letter);break;
+                case "A": testFunctionA(); break;
+                case "B": testFunctionB(); break;
+                case "C": testFunctionC(); break;
+                case "1": testFunction1(); break;
+                default: testFunctionNotAvailable(letter); break;
             }
         }
 
-        
+
         private void testFunctionA()
         {
             showMessageBox("Function A was called", "Functioncall");
@@ -303,10 +313,10 @@ namespace SmartMirror.TestUCs
 
         private void testFunctionNotAvailable(String letter)
         {
-            showMessageBox("Named function, " + letter + " was not available",  "Functioncall");
+            showMessageBox("Named function, " + letter + " was not available", "Functioncall");
         }
-        
-        private async void showMessageBox(String message,string title)
+
+        private async void showMessageBox(String message, string title)
         {
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
              {
@@ -314,7 +324,7 @@ namespace SmartMirror.TestUCs
              message, "Functioncall");
                  await messageDialog.ShowAsync();
              });
-           
+
         }
 
         #endregion
@@ -368,6 +378,6 @@ namespace SmartMirror.TestUCs
             button.IsEnabled = true;
         }
 
-      
+
     }
 }
