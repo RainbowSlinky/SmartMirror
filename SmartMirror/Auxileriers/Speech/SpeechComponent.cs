@@ -163,7 +163,7 @@ namespace SmartMirror.Auxileriers.Speech
 
 
 
-       #region "map Commands"
+       #region "FilterCommands"
         private Dictionary<String, List<string>> extractCommands(string input)
         {
             var tag = speechRecognizer.CurrentLanguage.LanguageTag;
@@ -189,8 +189,8 @@ namespace SmartMirror.Auxileriers.Speech
 
             //make it easier to filter
             input = input.ToLower();
-            Regex rxShowMailList = new Regex("(zeig|gib (mir )?(alle )?(meine )?mails)");
-            Regex rxParams = new Regex("(oder|und)? (von|an) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
+            Regex rxShowMailList = new Regex("(zeig|gib (mir )?(alle )?(meine )?mail)");
+            Regex rxParams = new Regex("(oder|und|von|an) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
             if (rxShowMailList.IsMatch(input))
             {
                 if (!rxParams.IsMatch(input))
@@ -208,21 +208,12 @@ namespace SmartMirror.Auxileriers.Speech
                         string transmittedText="";
                         //if there was an "and" or an "or" there are 4 groups
                         //else only 3
-                        if (item.Groups.Count == 4)
-                        {
-                            switch (item.Groups[pointer].Value)
-                            {
-                                case "oder": transmittedText = "or ";break;
-                                case "und":transmittedText = "and ";break;
-                                default: transmittedText = ""; break;
-                            }
-                            filter = transmittedText;
-                            pointer++;
-                        }
                         switch (item.Groups[pointer].Value)
                         {
                             case "von": transmittedText = "from";break;
                             case "an": transmittedText = "to";break;
+                            case "oder": transmittedText = "or "; break;
+                            case "und": transmittedText = "and "; break;
                             default: transmittedText = ""; break;
                         }
                         filter += transmittedText+": ";
@@ -239,7 +230,7 @@ namespace SmartMirror.Auxileriers.Speech
         {
             //make it easier to filter
             input = input.ToLower();
-            Regex rxOpenCalender = new Regex("(zeig|zeige|gib|öffne )mir? meinen? kalender)");
+            Regex rxOpenCalender = new Regex("zeig|zeige|gib|öffne mir? meinen? kalender");
             Regex rxCloseCalender = new Regex("(schließ|mach (meinen )?kalender( wieder)?( zu)?)|"+
                 "kalender( wieder)? schließen");
             if (rxCloseCalender.IsMatch(input))
@@ -265,7 +256,7 @@ namespace SmartMirror.Auxileriers.Speech
             //make it easier to filter
             input = input.ToLower();
             Regex rxShowMailList = new Regex("(show (me )?(all )?(my )?mails)");
-            Regex rxParams = new Regex("(or|and)? (from|to) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
+            Regex rxParams = new Regex("(or|and|from|to) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
             if (rxShowMailList.IsMatch(input))
             {
                 if (!rxParams.IsMatch(input))
@@ -282,11 +273,6 @@ namespace SmartMirror.Auxileriers.Speech
                         int pointer = 1;
                         //if there was an "and" or an "or" there are 4 groups
                         //else only 3
-                        if (item.Groups.Count == 4)
-                        {
-                            filter = item.Groups[pointer].Value;
-                            pointer++;
-                        }
                         filter += item.Groups[pointer].Value + ": ";
                         filter += item.Groups[pointer + 1].Value;
                         filters.Add(filter);

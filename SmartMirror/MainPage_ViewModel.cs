@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SmartMirror.Messenger_Notification.Google;
 using System.Text.RegularExpressions;
 using SmartMirror.Auxileriers.Speech;
+using Windows.UI.Core;
 
 namespace SmartMirror
 {
@@ -14,11 +15,12 @@ namespace SmartMirror
 
         public Gmail_ViewModel Gmail_Module { get; set; }
         private SpeechComponent speechPart;
-
+        private CoreDispatcher dispatcher;
         public MainPage_ViewModel()
         {
             Gmail_Module = new Gmail_ViewModel();
             speechPart = new SpeechComponent();
+            dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
             speechPart.commandsGenerated += reactOnSpeech;
             speechPart.sessionsExpired += speechSessionExpired;
             speechPart.startSession();
@@ -30,7 +32,7 @@ namespace SmartMirror
             speechPart.startSession();
         }
 
-        private void reactOnSpeech(Dictionary<String, List<String>> commands)
+        private async void  reactOnSpeech(Dictionary<String, List<String>> commands)
         {
 
             foreach (var command in commands)
@@ -44,8 +46,11 @@ namespace SmartMirror
                     default: break;
 
                 }
-                //var messageDialog = new Windows.UI.Popups.MessageDialog(command.Key, "StartAsync Exception");
-                //await messageDialog.ShowAsync();
+              await  dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
+                    var messageDialog = new Windows.UI.Popups.MessageDialog(command.Key, "Command detected");
+                    await messageDialog.ShowAsync();
+                });
+               
             }
 
         }
