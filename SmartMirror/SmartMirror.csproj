@@ -107,6 +107,7 @@
     <Compile Include="Auxileriers\Speech\SupportedCommandsEnum.cs" />
     <Compile Include="Auxileriers\Speech\IllegaleStateException.cs" />
     <Compile Include="Auxileriers\Speech\SpeechComponent.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
