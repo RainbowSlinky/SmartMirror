@@ -27,9 +27,11 @@ namespace SmartMirror.Auxileriers.Speech
         public delegate void CommandsGeneratedHandler(string command,string parameter);
 
         public delegate void SessionFinishedHandler();
+        public delegate void StateChanged(SpeechRecognizerState newState);
 
         public event CommandsGeneratedHandler commandsGenerated;
         public event SessionFinishedHandler sessionsExpired;
+        public event StateChanged sessionStateChanged; 
 
         /// <summary>
         /// Initialize Speech Recognizer and compile constraints.
@@ -113,6 +115,7 @@ namespace SmartMirror.Auxileriers.Speech
         private void SpeechRecognizer_StateChanged(SpeechRecognizer sender, SpeechRecognizerStateChangedEventArgs args)
         {
             //Nothing ATM
+            sessionStateChanged(args.State);
         }
 
         private void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)

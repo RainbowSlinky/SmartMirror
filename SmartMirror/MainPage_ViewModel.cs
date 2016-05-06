@@ -7,6 +7,7 @@ using SmartMirror.Messenger_Notification.Google;
 using System.Text.RegularExpressions;
 using SmartMirror.Auxileriers.Speech;
 using Windows.UI.Core;
+using Windows.Media.SpeechRecognition;
 
 namespace SmartMirror
 {
@@ -26,6 +27,7 @@ namespace SmartMirror
             dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
             speechPart.commandsGenerated += reactOnSpeech;
             speechPart.sessionsExpired += speechSessionExpired;
+            speechPart.sessionStateChanged += speechStateChanged;
             speechPart.startSession();
             indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Green);
         }
@@ -37,6 +39,11 @@ namespace SmartMirror
             speechPart.startSession();
 
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Green); });
+        }
+
+        private void speechStateChanged(SpeechRecognizerState newState)
+        {
+           //nothing as of yet
         }
 
         private async void  reactOnSpeech(string command,string param)
@@ -59,9 +66,6 @@ namespace SmartMirror
                     var messageDialog = new Windows.UI.Popups.MessageDialog(command+" parameter was: " +param, "Command detected");
                     await messageDialog.ShowAsync();
                 });
-               
-            
-
         }
     }
 }
