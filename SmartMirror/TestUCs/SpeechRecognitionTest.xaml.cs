@@ -113,7 +113,7 @@ namespace SmartMirror.TestUCs
 
                 // determine the language code being used.
                 string languageTag = recognizedLanguage.LanguageTag;
-                string fileName = String.Format("Assets\\Grammar\\{0}\\Grammar.xml", languageTag);
+                string fileName = String.Format("Assets\\Grammar\\{0}\\SampleGrammar.xml", languageTag);
                 StorageFile grammarContentFile = await Package.Current.InstalledLocation.GetFileAsync(fileName);
 
                 // Initialize the SpeechRecognizer and add the grammar.

@@ -16,38 +16,45 @@ namespace SmartMirror
         public Gmail_ViewModel Gmail_Module { get; set; }
         private SpeechComponent speechPart;
         private CoreDispatcher dispatcher;
+        public Windows.UI.Xaml.Media.Brush indicator { get; set; }
         public MainPage_ViewModel()
         {
+
+            indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red);
             Gmail_Module = new Gmail_ViewModel();
             speechPart = new SpeechComponent();
             dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
             speechPart.commandsGenerated += reactOnSpeech;
             speechPart.sessionsExpired += speechSessionExpired;
             speechPart.startSession();
+            indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Green);
         }
 
-        private void speechSessionExpired()
+        private async void speechSessionExpired()
         {
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>{ indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red); });
             //tbd
             speechPart.startSession();
+
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { indicator = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Green); });
         }
 
-        private async void  reactOnSpeech(Dictionary<String, List<String>> commands)
+        private async void  reactOnSpeech(Dictionary<SupportedCommands, List<String>> commands)
         {
 
             foreach (var command in commands)
             {
                 switch (command.Key)
                 {
-                    case "showMailList": break; //TBD
-                    case "showMails": break; //TBD
-                    case "closeCalender":break; //TBD
-                    case "openCalender":break; //TBD
+                    case SupportedCommands.showMailList: break; //TBD
+                    case SupportedCommands.showMails: break; //TBD
+                    case SupportedCommands.closeCalender:break; //TBD
+                    case SupportedCommands.openCalender:break; //TBD
                     default: break;
 
                 }
               await  dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
-                    var messageDialog = new Windows.UI.Popups.MessageDialog(command.Key, "Command detected");
+                    var messageDialog = new Windows.UI.Popups.MessageDialog(Enum.GetName(typeof(SupportedCommands),command.Key), "Command detected");
                     await messageDialog.ShowAsync();
                 });
                

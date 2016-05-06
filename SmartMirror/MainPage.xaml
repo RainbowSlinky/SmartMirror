@@ -23,6 +23,6 @@
     <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
         <ContentControl Content="{Binding Gmail_Module}" ContentTemplate="{StaticResource gmail_Template}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="100"/>
         <Button x:Name="button" Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="button_Click"/>
-
+<Button Background="{Binding indicator}" Height="24" Width="24"/>
     </StackPanel>
 </Page>

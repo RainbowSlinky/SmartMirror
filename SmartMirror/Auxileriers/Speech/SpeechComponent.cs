@@ -24,7 +24,7 @@ namespace SmartMirror.Auxileriers.Speech
         SpeechRecognizer speechRecognizer;                               // The speech recognition object 
                                                                          //IAsyncOperation<SpeechRecognitionResult> _recoOperation;    // Used to canel the current asynchronous speech recognition operation 
 
-        public delegate void CommandsGeneratedHandler(Dictionary<String, List<String>> commands);
+        public delegate void CommandsGeneratedHandler(Dictionary<SupportedCommands, List<String>> commands);
 
         public delegate void SessionFinishedHandler();
 
@@ -112,13 +112,13 @@ namespace SmartMirror.Auxileriers.Speech
 
         private void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
         {
-            
-           commandsGenerated(extractCommands(args.Result.Text));
+
+            commandsGenerated(extractCommands(args.Result.Text));
         }
         //endTBD
         private void ContinuousRecognitionSession_Completed(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)
         {
-              sessionsExpired();
+            sessionsExpired();
         }
 
         public async void startSession()
@@ -163,135 +163,147 @@ namespace SmartMirror.Auxileriers.Speech
 
 
 
-       #region "FilterCommands"
-        private Dictionary<String, List<string>> extractCommands(string input)
+        #region "FilterCommands"
+        private Dictionary<SupportedCommands, List<string>> extractCommands(string input)
         {
             var tag = speechRecognizer.CurrentLanguage.LanguageTag;
             tag = tag.Remove(tag.IndexOf("-"));
             switch (tag.ToLower())
             {
                 case "en": return extractCommandsEN(input);
-                case "de":return extractCommandsDE(input);
-                default: return null; 
-            }           
+                case "de": return extractCommandsDE(input);
+                default: return null;
+            }
         }
         #region "DE"
-        private Dictionary<String, List<string>> extractCommandsDE(string input)
+        private Dictionary<SupportedCommands, List<string>> extractCommandsDE(string input)
         {
-            Dictionary<String, List<String>> retval = new Dictionary<String, List<String>>();
+            Dictionary<SupportedCommands, List<String>> retval = new Dictionary<SupportedCommands, List<String>>();
             extractMailCommandsDE(input, retval);
             extractCalenderCommandsDE(input, retval);
             return retval;
         }
 
-        private void extractMailCommandsDE(string input, Dictionary<string, List<string>> retval)
+        private void extractMailCommandsDE(string input, Dictionary<SupportedCommands, List<string>> retval)
         {
 
             //make it easier to filter
             input = input.ToLower();
             Regex rxShowMailList = new Regex("(zeig|gib (mir )?(alle )?(meine )?mail)");
-            Regex rxParams = new Regex("(oder|und|von|an) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
-            if (rxShowMailList.IsMatch(input))
+            Regex rxParams;
+            // rxParams= new Regex("(oder|und|von|an) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
+            rxParams = new Regex("gib? mir? email|mail nummer? ([0-9]+)");
+            if (rxShowMailList.IsMatch(input) & !rxParams.IsMatch(input))
             {
-                if (!rxParams.IsMatch(input))
-                    retval.Add("showMailList", null);
-                else
-                {
-                    List<string> filters = new List<string>();
-                    foreach (Match item in rxParams.Matches(input))
-                    {
-                        if (!(item.Groups.Count >= 3))
-                        { continue; }
 
-                        var filter = "";
-                        int pointer = 1;
-                        string transmittedText="";
-                        //if there was an "and" or an "or" there are 4 groups
-                        //else only 3
-                        switch (item.Groups[pointer].Value)
-                        {
-                            case "von": transmittedText = "from";break;
-                            case "an": transmittedText = "to";break;
-                            case "oder": transmittedText = "or "; break;
-                            case "und": transmittedText = "and "; break;
-                            default: transmittedText = ""; break;
-                        }
-                        filter += transmittedText+": ";
-                        filter += item.Groups[pointer + 1].Value;
-                        filters.Add(filter);
-                    }
-                    retval.Add("showMails", filters);
-                }
+                retval.Add(SupportedCommands.showMailList, null);
             }
+            else if (rxParams.IsMatch(input))
+            {
+                List<string> filters = new List<string>();
+                foreach (Match item in rxParams.Matches(input))
+                {
+                    if (!(item.Groups.Count >= 2))
+                    { continue; }
+
+                    var filter = item.Groups[1].Value;
+                    filters.Add(filter);
+                }
+                retval.Add(SupportedCommands.showMails, filters);
+            }            
         }
 
 
-        private void extractCalenderCommandsDE(string input, Dictionary<string, List<string>> retval)
+        private void extractCalenderCommandsDE(string input, Dictionary<SupportedCommands, List<string>> retval)
         {
             //make it easier to filter
             input = input.ToLower();
             Regex rxOpenCalender = new Regex("zeig|zeige|gib|öffne mir? meinen? kalender");
-            Regex rxCloseCalender = new Regex("(schließ|mach (meinen )?kalender( wieder)?( zu)?)|"+
+            Regex rxCloseCalender = new Regex("(schließ|mach (meinen )?kalender( wieder)?( zu)?)|" +
                 "kalender( wieder)? schließen");
             if (rxCloseCalender.IsMatch(input))
-            { retval.Add("closeCalender", null); }
+            { retval.Add(SupportedCommands.closeCalender, null); }
             else if (rxOpenCalender.IsMatch(input))
-            { retval.Add("openCalender", null); }
+            { retval.Add(SupportedCommands.openCalender, null); }
         }
         #endregion
 
         #region "EN"
 
-        private Dictionary<String, List<string>> extractCommandsEN(string input)
+        private Dictionary<SupportedCommands, List<string>> extractCommandsEN(string input)
         {
-            Dictionary<String, List<String>> retval = new Dictionary<String, List<String>>();
+            Dictionary<SupportedCommands, List<String>> retval = new Dictionary<SupportedCommands, List<String>>();
             extractMailCommandsEN(input, retval);
             extractCalenderCommandsEN(input, retval);
             return retval;
         }
 
-        private void extractMailCommandsEN(string input, Dictionary<string, List<string>> retval)
+        private void extractMailCommandsEN(string input, Dictionary<SupportedCommands, List<string>> retval)
         {
 
             //make it easier to filter
             input = input.ToLower();
-            Regex rxShowMailList = new Regex("(show (me )?(all )?(my )?mails)");
-            Regex rxParams = new Regex("(or|and|from|to) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
-            if (rxShowMailList.IsMatch(input))
+            Regex rxShowMailList = new Regex("(show (me )?(all )?(my )?mail)");
+            Regex rxParams;
+            //rxParams= new Regex("(or|and|from|to) ([A-Za-z0-9.@-]+ ?[A-Za-z0-9]*)");
+            rxParams = new Regex("give? me? mail number ([0-9]+)");
+            if (rxShowMailList.IsMatch(input) & !rxParams.IsMatch(input))
             {
-                if (!rxParams.IsMatch(input))
-                    retval.Add("showMailList", null);
-                else
+                retval.Add(SupportedCommands.showMailList, null);
+            }
+            else if (rxParams.IsMatch(input))
+            {
+                List<string> filters = new List<string>();
+                foreach (Match item in rxParams.Matches(input))
                 {
-                    List<string> filters = new List<string>();
-                    foreach (Match item in rxParams.Matches(input))
-                    {
-                        if (!(item.Groups.Count >= 3))
-                        { continue; }
+                    if (!(item.Groups.Count >= 2))
+                    { continue; }
 
-                        var filter = "";
-                        int pointer = 1;
-                        //if there was an "and" or an "or" there are 4 groups
-                        //else only 3
-                        filter += item.Groups[pointer].Value + ": ";
-                        filter += item.Groups[pointer + 1].Value;
-                        filters.Add(filter);
-                    }
-                    retval.Add("showMails", filters);
+                    var filter = item.Groups[1].Value;
+                    filters.Add(filter);
                 }
+                retval.Add(SupportedCommands.showMails, filters);
             }
         }
-        private void extractCalenderCommandsEN(string input, Dictionary<string, List<string>> retval)
+        private void extractCalenderCommandsEN(string input, Dictionary<SupportedCommands, List<string>> retval)
         {
             //make it easier to filter
             input = input.ToLower();
             Regex rxOpenCalender = new Regex("give|show|display (me )?(my )?calender)");
             Regex rxCloseCalender = new Regex("close (my )?calender( again)?");
             if (rxCloseCalender.IsMatch(input))
-            { retval.Add("closeCalender", null); }
+            { retval.Add(SupportedCommands.closeCalender, null); }
             else if (rxOpenCalender.IsMatch(input))
-            { retval.Add("openCalender", null); }
+            { retval.Add(SupportedCommands.openCalender, null); }
         }
+        private void extractNewsCommandsEN(string input, Dictionary<SupportedCommands, List<string>> retval)
+        {
+            input = input.ToLower();
+            Regex rxOpenNewsComponent = new Regex("show? me? the? latest? news");
+            Regex rxShowSpecificNews = new Regex("(give|show)? news number ([0-9]+)");
+            Regex rxCloseAllNews = new Regex("close news");
+            Regex rxcloseSpecificNews = new Regex("close news number ([0-9]+)");
+            if (rxShowSpecificNews.IsMatch(input))
+            {
+                string[] listl = { rxShowSpecificNews.Match(input).Groups[2].Value };
+                retval.Add(SupportedCommands.openSpecificNews, listl.ToList());
+            }
+            else if (rxOpenNewsComponent.IsMatch(input))
+            {
+                retval.Add(SupportedCommands.openNews, null);
+            }
+            else if (rxcloseSpecificNews.IsMatch(input))
+            {
+                string[] listl = { rxcloseSpecificNews.Match(input).Groups[1].Value };
+                retval.Add(SupportedCommands.closeSpecificNews, listl.ToList());
+            }
+            else if (rxCloseAllNews.IsMatch(input))
+            {
+                retval.Add(SupportedCommands.closeNews, null);
+            }
+
+        }
+        
         #endregion
 
 
