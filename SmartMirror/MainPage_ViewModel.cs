@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SmartMirror.Messenger_Notification.Google;
+using SmartMirror.Common;
+using System.Collections.Generic;
+using Google.Apis.Gmail.v1.Data;
+using System.Collections.ObjectModel;
+
 using System.Text.RegularExpressions;
 using SmartMirror.Auxileriers.Speech;
 using Windows.UI.Core;
@@ -14,6 +15,10 @@ namespace SmartMirror
     {
 
         public Gmail_ViewModel Gmail_Module { get; set; }
+        public Content_ViewModel GmailContent_Module { get; set; }
+        private Gmail_View gmail_View;
+        Content_View gmailContetnt_View;
+
         private SpeechComponent speechPart;
         private CoreDispatcher dispatcher;
         public Windows.UI.Xaml.Media.Brush indicator { get; set; }
@@ -62,6 +67,25 @@ namespace SmartMirror
                
             
 
+            GmailContent_Module = new Content_ViewModel();
+            Gmail_Module.OnListChanged += Gmail_ViewModel_ListChanged;
+            Gmail_Module.OnOpenEmailRequest += Gmail_ViewModel_OpenEmail;
+            gmail_View = new Gmail_View();
+            gmailContetnt_View = new Content_View();
+            gmail_View.DataContext = Gmail_Module;
+            
+        }
+
+        public void Gmail_ViewModel_ListChanged(List<GmailMessage> messageList)
+        {
+            gmailContetnt_View.DataContext = GmailContent_Module;
+            GmailContent_Module.MessageList = new ObservableCollection<GmailMessage>(messageList);
+        }
+
+        public void Gmail_ViewModel_OpenEmail(GmailMessage gmailMessage)
+        {
+            gmailContetnt_View.DataContext = GmailContent_Module;
+            GmailContent_Module.GmailMessage = gmailMessage;
         }
     }
 }

@@ -6,8 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModel="using:SmartMirror"
-    xmlns:GmailView="using:SmartMirror.Messenger_Notification.Google"
-    xmlns:GmailViewModel="using:SmartMirror.Messenger_Notification.Google"
+    xmlns:Gmail="using:SmartMirror.Messenger_Notification.Google"
     mc:Ignorable="d">
     
     <UserControl.DataContext>
@@ -15,14 +14,17 @@
     </UserControl.DataContext>
 
     <Page.Resources>
-        <DataTemplate x:Key="gmail_Template" x:DataType="GmailViewModel:Gmail_ViewModel">
-            <GmailView:Gmail_View/>
+        <DataTemplate x:Key="gmail_Template" x:DataType="Gmail:Gmail_ViewModel">
+            <Gmail:Gmail_View/>
+        </DataTemplate>
+        <DataTemplate x:Key="gmailContent_Template" x:DataType="Gmail:Content_ViewModel">
+            <Gmail:Content_View/>
         </DataTemplate>
     </Page.Resources>
         
-    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
-        <ContentControl Content="{Binding Gmail_Module}" ContentTemplate="{StaticResource gmail_Template}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="100"/>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="button_Click"/>
-<Button Background="{Binding indicator}" Height="24" Width="24"/>
+    <StackPanel Orientation="Horizontal" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
+        <ContentControl Content="{Binding Gmail_Module}" ContentTemplate="{StaticResource gmail_Template}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="150"/>
+        <ContentControl Content="{Binding GmailContent_Module}" ContentTemplate="{StaticResource gmailContent_Template}" />
     </StackPanel>
+    
 </Page>
