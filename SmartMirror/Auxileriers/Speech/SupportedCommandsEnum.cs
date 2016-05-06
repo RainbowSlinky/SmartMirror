@@ -18,7 +18,7 @@ namespace SmartMirror.Auxileriers.Speech
 
         showMailList,
         showMails
-        
+
 
     }
 }

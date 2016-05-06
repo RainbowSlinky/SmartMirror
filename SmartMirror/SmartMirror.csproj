@@ -90,6 +90,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\Grammar\de\Grammar.xml" />
+    <Content Include="Assets\Grammar\en\Grammar.xml" />
     <Content Include="Assets\Grammar\en\SampleGrammar.xml" />
     <Content Include="Messenger_Notification\Google\client_secret.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

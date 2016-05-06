@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<grammar xml:lang="de-DE" root="doSomething"
+<grammar xml:lang="en-EN" root="doSomething"
 tag-format="semantics/1.0" version="1.0"
 xmlns="http://www.w3.org/2001/06/grammar"
 xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
@@ -8,22 +8,19 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
   <rule id="openNews">
     <one-of>
       <item>
-        zeig mir die News
+        open the News
       </item>
       <item>
-        gib mir die News
+        open News
       </item>
       <item>
-        News
+        show News
       </item>
       <item>
-        zeig mir die Nachrichten
+        show the News
       </item>
       <item>
-        gib mir die Nachrichten
-      </item>
-      <item>
-       Was gibt's neues in der Welt
+        show me the News
       </item>
     </one-of>
   </rule>
@@ -31,10 +28,10 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
   <rule id="closeNews">
     <one-of>
       <item>
-        News schließen
+        close all News
       </item>
       <item>
-        schließ die News
+        close News
       </item>
     </one-of>
   </rule>
@@ -42,16 +39,16 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
   <rule id="openSpecificNews">
     <one-of>
       <item>
-        zeig mir News nummer
+        open News number
         <ruleref uri="#numbers"/>
       </item>
       <item>
-        gib mir News nummer
+        show News number
         <ruleref uri="#numbers"/>
       </item>
       <item>
-        zeig mir Nachricht nummer
-       <ruleref uri="#numbers"/>
+        show me News
+        <ruleref uri="#numbers"/>
       </item>
     </one-of>
   </rule>
@@ -59,21 +56,25 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
   <rule id="closeSpecificNews">
     <one-of>
       <item>
-          schließ Nachricht nummer
+        close News number
         <ruleref uri="#numbers"/>
-      </item>
-      <item>
-           Nachricht nummer
-        <ruleref uri="#numbers"/>
-          schließ
       </item>
     </one-of>
   </rule>
 
   <rule id="closeCalender">
-     <one-of>
+    <one-of>
       <item>
-        Kalender schließen
+        close calender
+      </item>
+      <item>
+        close calender again
+      </item>
+      <item>
+        close my calender
+      </item>
+      <item>
+        close my calender again
       </item>
     </one-of>
   </rule>
@@ -81,30 +82,39 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
   <rule id="openCalender">
     <one-of>
       <item>
-        zeig mir meinen Kalender
+        open calender
       </item>
       <item>
-        gib mir meinen Kalender
+        open my calender
       </item>
       <item>
-          Kalender
+        show calender
       </item>
       <item>
-          Kalender zeigen
+        show me calender
+      </item>
+      <item>
+        show me my calender
       </item>
     </one-of>
   </rule>
-  
+
   <rule id="showMailList">
     <one-of>
       <item>
-        zeig mir meine Mails
+        show me all my mails
       </item>
       <item>
-        zeig mir meine Emails
+        show all my mails
       </item>
       <item>
-        Emails
+        show my mails
+      </item>
+      <item>
+        show mails
+      </item>
+      <item>
+        show all mails
       </item>
     </one-of>
   </rule>
@@ -112,24 +122,35 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
   <rule id="showMails">
     <one-of>
       <item>
-       Zeig mir Mail nummer
+        show mail number
         <ruleref uri="#numbers"/>
       </item>
-     <item>
-        Mail nummer
+      <item>
+        show me mail number
+        <ruleref uri="#numbers"/>
+      </item>
+      <item>
+        give me mail number
+        <ruleref uri="#numbers"/>
+      </item>
+      <item>
+        give mail number
         <ruleref uri="#numbers"/>
       </item>
     </one-of>
   </rule>
-  
+
   <rule id="closeMails">
     <one-of>
       <item>
-        schließ meine Mails
+        close Mails
+      </item>
+      <item>
+        close all Mails
       </item>
     </one-of>
   </rule>
-    
+
   <rule id="numbers">
     <one-of>
       <item>
@@ -298,7 +319,7 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
       <item>
         <ruleref uri="#openSpecificNews"/>
         <tag>out.command="openSpecificNews"</tag>
-       <tag>out.param=rules.latest()</tag>
+        <tag>out.param=rules.latest()</tag>
       </item>
       <item>
         <ruleref uri="#closeSpecificNews"/>
@@ -309,11 +330,11 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
         <ruleref uri="#closeCalender"/>
         <tag>out.command="closeCalender"</tag>
       </item>
-    <item>
+      <item>
         <ruleref uri="#openCalender"/>
         <tag>out.command="openCalender"</tag>
       </item>
-    <item>
+      <item>
         <ruleref uri="#showMailList"/>
         <tag>out.command="showMailList"</tag>
       </item>
@@ -322,7 +343,7 @@ xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions"
         <tag>out.command="showMails"</tag>
         <tag>out.param=rules.latest()</tag>
       </item>
-    <item>
+      <item>
         <ruleref uri="#closeMails"/>
         <tag>out.command="closeMails"</tag>
       </item>
