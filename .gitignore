@@ -243,3 +243,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/App2/*
+/NewsFeedConsoleApplication/*
+/NewsFeedConsoleApplication/*
+/NewsFeedConsoleApplication/Properties/AssemblyInfo.cs
+/NewsFeedConsoleApplication/Program.cs
+/NewsFeedConsoleApplication/NewsFeedConsoleApplication.csproj
+/NewsFeedConsoleApplication/App.config

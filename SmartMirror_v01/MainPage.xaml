@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModel="using:SmartMirror"
     xmlns:Gmail="using:SmartMirror.Messenger_Notification.Google"
+    xmlns:News ="using:SmartMirror.NewsFeed_Notification"
     mc:Ignorable="d">
     
     <UserControl.DataContext>
@@ -20,11 +21,17 @@
         <DataTemplate x:Key="gmailContent_Template" x:DataType="Gmail:Content_ViewModel">
             <Gmail:Content_View/>
         </DataTemplate>
+        <DataTemplate x:Key="news_Template" x:DataType="News:News_ViewModel">
+            <News:News_View/>
+        </DataTemplate>
     </Page.Resources>
         
-    <StackPanel Orientation="Horizontal" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
-        <ContentControl Content="{Binding Gmail_Module}" ContentTemplate="{StaticResource gmail_Template}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="150"/>
-        <ContentControl Content="{Binding GmailContent_Module}" ContentTemplate="{StaticResource gmailContent_Template}" />
+    <StackPanel Orientation="Vertical" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
+        <StackPanel Orientation="Horizontal">
+            <ContentControl Content="{Binding Gmail_Module}" ContentTemplate="{StaticResource gmail_Template}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="150"/>
+            <ContentControl Content="{Binding GmailContent_Module}" ContentTemplate="{StaticResource gmailContent_Template}" />
+        </StackPanel>
+        <ContentControl Content="{Binding News_Module}" ContentTemplate="{StaticResource news_Template}"/>
     </StackPanel>
     
 </Page>

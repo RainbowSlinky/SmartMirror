@@ -27,7 +27,7 @@ namespace SmartMirror.Datetime.Calendar
             this.InitializeComponent();
         }
 
-        private void CalendarView_CalendarViewDayItemChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
+        /*private void CalendarView_CalendarViewDayItemChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
         {
 
             if (args.Item.Date.DayOfWeek == DayOfWeek.Saturday ||
@@ -35,6 +35,6 @@ namespace SmartMirror.Datetime.Calendar
             {
                 args.Item.IsBlackout = true;
             }
-        }
+        }*/
     }
 }
